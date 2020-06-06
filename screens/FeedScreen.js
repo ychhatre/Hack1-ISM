@@ -38,7 +38,7 @@ posts = [
 
   }
 ]
- class Feed extends React.Component {
+ class FeedScreen extends React.Component {
    constructor(props) {
        super(props);
        this.state = {
@@ -160,4 +160,4 @@ const styles = StyleSheet.create({
   }
 
 });
-export default Feed
+export default FeedScreen
