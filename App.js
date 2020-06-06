@@ -14,7 +14,7 @@ import 'react-native-gesture-handler';
 import Profile from "./screens/profile.js"
 import Login from './screens/LoginScreen';
 import Register from './screens/RegisterScreen';
-import Feed from "./screens/feed.js";
+import Feed from "./screens/FeedScreen.js";
 import 'firebase/firestore';
 
 
