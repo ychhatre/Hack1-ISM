@@ -1,38 +1,48 @@
+
 import  React, {useState} from 'react';
 import { Text, View, TouchableOpacity, StyleSheet} from 'react-native';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+//
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+//
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import { Icon } from 'react-native-elements'
-
+import 'react-native-gesture-handler';
+import Profile from "./screens/profile.js"
 import Login from './screens/LoginScreen';
 import Register from './screens/RegisterScreen';
-import Home from './screens/HomeScreen';
+import Feed from "./screens/feed.js";
+import 'firebase/firestore';
+
+
 
 import * as firebase from 'firebase';
 
-
-function HomeScreen() {
-  const navigation = useNavigation();
-
-  return (
-    <React.Fragment>
-      <Home />
-    </React.Fragment>
-  );
-}
+window.addEventListener = x => x
 
 
+var firebaseConfig = {
+  apiKey: "AIzaSyAtw829AUfwng1BMjGTcCy5GWVoAyaQoLs",
+  authDomain: "i-s-m-3b72e.firebaseapp.com",
+  databaseURL: "https://i-s-m-3b72e.firebaseio.com",
+  projectId: "i-s-m-3b72e",
+  storageBucket: "i-s-m-3b72e.appspot.com",
+  messagingSenderId: "485377043748",
+  appId: "1:485377043748:web:200186207ac6e0ee61d7b1",
+  measurementId: "G-RKM3PKFWC6"
+};
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-function FeedScreen() {
-    const navigation = useNavigation();
-    return(
-          <React.Fragment>
-            <Feed navigation={navigation}/>
-          </React.Fragment>
-    );
-}
+
+
+
+
+
 
 function LoginScreen() {
   const navigation = useNavigation();
@@ -53,9 +63,19 @@ function RegisterScreen() {
   );
 }
 
-function LoadingScreen() {
-  return (
-    <Loading />
+function FeedScreen() {
+  const navigation = useNavigation();
+  return(
+    <Feed navigation={navigation}/>
+
+  )
+}
+
+function ProfileScreen() {
+  const navigation= useNavigation();
+  return(
+    <Profile navigation={navigation}/>
+
   )
 }
 
@@ -65,9 +85,13 @@ function MainTabNavigator() {
     <Tab.Navigator initialRouteName="Feed"
     tabBarOptions={{ activeTintColor:"white", inactiveTintColor:"grey" }}
       barStyle={{ backgroundColor: '#1c1c1c' }}>
-      <Tab.Screen name='Home' component={HomeScreen} options={{
+      <Tab.Screen name='Profile' component={ProfileScreen} options={{
         tabBarIcon: ({color}) => <Icon  name='home'  type='font-awesome'  color={color}  size='24'/>
       }}/>
+      <Tab.Screen name='Feed' component={FeedScreen} options={{
+        tabBarIcon: ({color}) => <Icon  name='inbox'  type='font-awesome'  color={color}  size='24'/>
+      }}/>
+
     </Tab.Navigator>
   )
 }
@@ -77,10 +101,12 @@ export default function App() {
 
   return(
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="Login" headerMode="float">
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name="Home" component={MainTabNavigator} />
+          <Stack.Screen name="Feed" component={MainTabNavigator} options={{
+              headerShown:false,
+          }}/>
         </Stack.Navigator>
      </NavigationContainer>
    );
@@ -128,4 +154,12 @@ const styles = StyleSheet.create({
     borderBottomColor: 'black',
     backgroundColor: 'white',
   },
+  loginText: {
+    color: 'white',
+  },
+  loginTextt: {
+    color: 'black',
+    marginLeft: 6
+  }
+
 });
