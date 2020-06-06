@@ -3,8 +3,6 @@ import {
   Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, Image, View
 } from 'react-native';
 import {Icon} from 'react-native-elements';
-import { Formik } from "formik";
-import * as Yup from "yup";
 import * as firebase from 'firebase';
 import {
   Block, Button, Input, NavBar, Text,
@@ -14,6 +12,18 @@ import theme from '../components/theme.js';
 const { height, width } = Dimensions.get('window');
 
 
+var firebaseConfig = {
+  apiKey: "AIzaSyAtw829AUfwng1BMjGTcCy5GWVoAyaQoLs",
+  authDomain: "i-s-m-3b72e.firebaseapp.com",
+  databaseURL: "https://i-s-m-3b72e.firebaseio.com",
+  projectId: "i-s-m-3b72e",
+  storageBucket: "i-s-m-3b72e.appspot.com",
+  messagingSenderId: "485377043748",
+  appId: "1:485377043748:web:200186207ac6e0ee61d7b1",
+  measurementId: "G-RKM3PKFWC6"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 
 class Login extends React.Component {
@@ -23,13 +33,10 @@ class Login extends React.Component {
       email: '',
       password: '',
       errorMessage: null,
-
     }
   }
 
   handleLogin = () => {
-
-
     firebase
     .auth()
     .signInWithEmailAndPassword(this.state.email,this.state.password)
@@ -37,7 +44,7 @@ class Login extends React.Component {
     var user = firebase.auth().currentUser;
     if(user){
     this.props.navigation.navigate("Home")
-  }else{
+  } else {
     console.log("User does not exist")
   }
 }
