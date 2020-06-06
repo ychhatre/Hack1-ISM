@@ -4,12 +4,18 @@ import {
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import * as firebase from 'firebase';
+// galio component
 import {
   Block, Button, Input, NavBar, Text
 } from 'galio-framework';
 import theme from '../components/theme.js';
 
 const { height, width } = Dimensions.get('window');
+
+
+
+
+
 
 class Register extends React.Component {
 
@@ -22,6 +28,16 @@ class Register extends React.Component {
         lname: '',
         errorMessage: null
       }
+    }
+
+    handleLogin = () => {
+      const {email, password} = this.state
+
+      firebase
+      .auth()
+      .signInWithEmailAndPassword(email,password)
+      .catch(error => this.setState({errorMessage: error.message}));
+
     }
 
     handleSignUp = () => {
