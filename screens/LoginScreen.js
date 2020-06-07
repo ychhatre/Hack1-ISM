@@ -22,9 +22,11 @@ class Login extends React.Component {
       email: '',
       password: '',
       errorMessage: null,
+      list:[],
 
     }
   }
+
 
   handleLogin = () => {
 
