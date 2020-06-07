@@ -1,44 +1,11 @@
 import React from 'react';
-import {View, Text,StyleSheet, ActivityIndicator, FlatList, TouchableOpacity} from 'react-native';
+import {View, Text,StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, ScrollView} from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 import {Ionicons} from "@expo/vector-icons";
-
-posts = [
-  {
-    id: "1",
-    name:"Mlack Ban",
-    text:
-      "AMA my grandfather was a slave!",
-    timestamp: 156910927372,
-
-  },
-  {
-    id: "2",
-    name:"Mlack Ban",
-    text:
-      "AMA my grandfather was a slave!",
-    timestamp: 1569109273726,
-
-  },
-  {
-    id: "3",
-    name:"Mlack Ban",
-    text:
-      "AMA my grandfather was a slave!",
-    timestamp: 1569109273726,
-
-  },
-  {
-    id: "4",
-    name:"Mlack Ban",
-    text:
-      "AMA my grandfather was a slave!",
-    timestamp: 1569109273726,
-
-  }
-]
- class FeedScreen extends React.Component {
+import * as firebase from 'firebase';
+import moment from "moment"
+ class Feed extends React.Component {
    constructor(props) {
        super(props);
        this.state = {
@@ -46,21 +13,60 @@ posts = [
        errorFieldColor:'',
        fontsLoaded: false,
         navigation:'',
+        list:[]
 
 
 
        }
      }
 
+
+
+     handlePostGet = () => {
+    firebase.firestore().collection("Posts").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+      //  console.log(doc.data())
+            var postData = [
+              {
+                id: `${doc.id}`,
+                text:doc.data().Text,
+                author:doc.data().Author,
+                timestamp:doc.data().time.toDate(),
+                upvotes: doc.data().upvotes
+              }
+            ]
+             this.setState({list:this.state.list.concat(postData)})
+
+
+      });
+
+
+
+      console.log(this.state.list)
+
+  });
+  }
+
+  handleUpvotes = () => {
+
+  }
+
+
+
+
      renderPost = post => {
        return(
+
+
+      this.state.list.map((item, i)  (
+
          <View style={styles.feedItem}>
 
             <View style={{flex: 1}}>
                 <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                   <View>
-                      <Text style={styles.name}>{post.name} </Text>
-                      <Text style={styles.timeStamp}>{post.timestamp}</Text>
+                      <Text style={styles.name}></Text>
+                      <Text style={styles.timeStamp}></Text>
 
                   </View>
                   <TouchableOpacity>
@@ -68,7 +74,7 @@ posts = [
                   </TouchableOpacity>
                 </View>
 
-                <Text style={styles.posts}>{post.text}</Text>
+                <Text style={styles.posts}></Text>
                 <View style={{flexDirection: "row"}}>
                 <TouchableOpacity>
                     <Ionicons name="md-arrow-up" size={24} color="#73788B"  style={{marginRight: 16, marginTop: 20}} />
@@ -76,9 +82,13 @@ posts = [
                 <TouchableOpacity>
                     <Ionicons name="ios-chatboxes" size={24} color="#73788B" style={{marginRight: 16, marginTop: 20}} />
                 </TouchableOpacity>
+
                 </View>
             </View>
          </View>
+       ))
+
+
        )
      }
      componentDidMount() {
@@ -87,6 +97,8 @@ posts = [
                  "sofiapro-light": require('../assets/fonts/sofiapro-light.otf')
                }
            ).then( () => this.setState( { fontsLoaded: true } ) )
+           this.handlePostGet()
+
        }
 
        render() {
@@ -96,14 +108,46 @@ posts = [
            return (
              <View style={styles.container}>
                 <View style={styles.header}>
+
                   <Text style={{justifyContent:"center", alignItems:'center', fontFamily: "DMSans-Medium", fontSize:25}}> Feed </Text>
                 </View>
-              <FlatList
-               style={styles.feed}
-                data={posts}
-                renderItem = {({item}) => this.renderPost(item)}
-                keyExtractor={item  => item.id}
-                showsVerticalScrollIndicator={false}/>
+                  <ScrollView>
+                  {
+
+                          this.state.list.map((item, i) => (
+
+                             <View style={styles.feedItem}>
+
+                                <View style={{flex: 1}}>
+                                    <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                                      <View>
+                                          <Text style={styles.name}>{item.author}</Text>
+                                          <Text style={styles.timeStamp}>{moment(item.timestamp).fromNow()}</Text>
+                                          <Text style={styles.timeStamp}>{item.upvotes} upvotes</Text>
+
+                                      </View>
+                                      <TouchableOpacity>
+                                      <Ionicons name="ios-more" size={24} color="#737888" />
+                                      </TouchableOpacity>
+                                    </View>
+
+                                    <Text style={styles.posts}>{item.text}</Text>
+                                    <View style={{flexDirection: "row"}}>
+                                    <TouchableOpacity>
+                                        <Ionicons name="md-arrow-up" size={24} color="#73788B"  style={{marginRight: 16, marginTop: 20}} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity>
+                                        <Ionicons name="ios-chatboxes" size={24} color="#73788B" style={{marginRight: 16, marginTop: 20}} />
+                                    </TouchableOpacity>
+
+
+
+                                    </View>
+                                </View>
+                             </View>
+                           ))
+                  }
+                  </ScrollView>
               </View>
       );
     }
@@ -137,9 +181,10 @@ const styles = StyleSheet.create({
   feedItem: {
     backgroundColor: "#FFF",
     borderRadius: 5,
-    padding: 8,
+    padding: 10,
     flexDirection: "row",
     marginVertical:8,
+
 
     shadowColor:"#454D65",
     shadowOffset:{ height: 3},
@@ -160,4 +205,4 @@ const styles = StyleSheet.create({
   }
 
 });
-export default FeedScreen
+export default Feed
