@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, Image, View} from 'react-native';
+import {Alert, Dimensions, KeyboardAvoidingView, StyleSheet, Platform, TouchableOpacity, Image, View, ScrollView} from 'react-native';
 import {
     Block, Button, Input, NavBar, Text,
   } from 'galio-framework';
@@ -15,27 +15,48 @@ class Post extends Component {
 
     state = {
         text: '',
-        image: null
+        image: ""
     }
 
     componentDidMount() {
         this.getPhotoPermission();
     }
 
-    getPhotoPermission = async() => {
+    getPhotoPermission = async () => {
         if (Constants.platform.ios) {
-            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLE)
+            const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL)
 
             if (status != "granted") {
                 alert("We need to access your camera roll")
             }
         }
     }
+
+    handlePost = () => {
+      Fire.shared
+          .addPost({ text: this.state.text.trim(), localUri: this.state.image})
+          .then(ref => {
+            this.setState({text:"", image: null});
+            this.props.navigation.navigate('FeedScreen')
+          })
+    }
+
+    pickImage = async() => {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3]
+      })
+      if (!result.cancelled)  {
+        this.setState({image: result.uri});
+      }
+    }
+
     render () {
         return(
-            <SafeAreaView style={styles.container}>
+            <ScrollView style={styles.container} keyboardDismissMode='on-drag'>
                 <View style={styles.header}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={this.handlePost}>
                         <Text style = {{fontWeight:"500"}}> Post </Text>
                     </TouchableOpacity>
                 </View>
@@ -46,15 +67,20 @@ class Post extends Component {
                         multiline={true}
                         numberOfLines={4}
                         style={{flex: 1}}
-                        placeholder="Share your thoughts...">
+                        placeholder="Share your thoughts..."
+                        onChangeText={text => this.setState({text})}/>
 
-                    </TextInput>
+
                 </View>
 
-                <TouchableOpacity style={styles.photo}>
+                <TouchableOpacity style={styles.photo} onPress={this.pickImage}>
                     <Ionicons name='md-camera' size ={32} color = "#D8D9DB"></Ionicons>
                 </TouchableOpacity>
-            </SafeAreaView>
+
+                <View style={{marginHorizontal: 32, marginTop:32, height: 150}}>
+                  <Image source = {{uri: this.state.image}} style ={{width: "100%", height: "100%"}}></Image>
+                </View>
+            </ScrollView>
         );
     }
 }
