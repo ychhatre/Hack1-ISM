@@ -8,7 +8,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { TextInput } from 'react-native-paper';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import Fire from '../Fire.js' 
+import Fire from '../Fire.js';
+import * as ImagePicker from "expo-image-picker";
 
 class Post extends Component {
 
@@ -31,24 +32,22 @@ class Post extends Component {
         }
     }
     render () {
-        return( 
-            <SafeAreaView style={styles.container}> 
-                <View style={styles.header}> 
-                    <TouchableOpacity> 
-                        <Ionicons name = "md-arrow-back" size = {24} color="#D8D9DB"></Ionicons>
-                    </TouchableOpacity> 
+        return(
+            <SafeAreaView style={styles.container}>
+                <View style={styles.header}>
                     <TouchableOpacity>
                         <Text style = {{fontWeight:"500"}}> Post </Text>
                     </TouchableOpacity>
                 </View>
-                <View styles = {styles.inputContainer}>
-                    <Image source = {this.state.image} style = {styles.avatar}></Image>
-                    <TextInput 
-                        autoFocus={true} 
-                        multiline={true} 
-                        numberOfLines={4} 
-                        style={{flex: 1}} 
-                        placeholder="Would you like to share your thoughts?">
+                <View style = {styles.inputContainer}>
+
+                    <TextInput
+                        autoFocus={true}
+                        multiline={true}
+                        numberOfLines={4}
+                        style={{flex: 1}}
+                        placeholder="Share your thoughts...">
+
                     </TextInput>
                 </View>
 
@@ -61,11 +60,9 @@ class Post extends Component {
 }
 
 
-const styles = StyleSheet.create({ 
+const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "center"
     },
     header: {
         flexDirection: "row",
@@ -83,12 +80,12 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 24,
-        marginRight: 16
+        marginRight: 16,
     },
     photo: {
         alignItems: "flex-end",
-        marginHorizontal: 32
+        marginHorizontal: 32,
     }
 });
 
-export default Post; 
+export default Post;
