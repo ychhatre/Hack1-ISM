@@ -10,14 +10,18 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import Fire from '../Fire.js';
 import * as ImagePicker from "expo-image-picker";
-
+import * as firebase from 'firebase';
 class Post extends Component {
+  constructor(props) {
+      super(props);
+      this.state = {
+        text: "",
+        image:""
 
-    state = {
-        text: '',
-        image: ""
+
+      }
+
     }
-
     componentDidMount() {
         this.getPhotoPermission();
     }
@@ -37,8 +41,12 @@ class Post extends Component {
           .addPost({ text: this.state.text.trim(), localUri: this.state.image})
           .then(ref => {
             this.setState({text:"", image: null});
-            this.props.navigation.navigate('FeedScreen')
+            this.props.navigation.navigate('Feed')
           })
+    }
+
+    addtoDatabase = () => {
+      firebase.firestore().collection("Posts").doc(this.state.text).set({Text: this.state.text, Author: firebase.auth().currentUser.email, time: new Date().getTime()})
     }
 
     pickImage = async() => {
@@ -56,7 +64,7 @@ class Post extends Component {
         return(
             <ScrollView style={styles.container} keyboardDismissMode='on-drag'>
                 <View style={styles.header}>
-                    <TouchableOpacity onPress={this.handlePost}>
+                    <TouchableOpacity onPress={this.addtoDatabase}>
                         <Text style = {{fontWeight:"500"}}> Post </Text>
                     </TouchableOpacity>
                 </View>
