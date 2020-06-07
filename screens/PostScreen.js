@@ -11,6 +11,7 @@ import * as Permissions from 'expo-permissions';
 import Fire from '../Fire.js';
 import * as ImagePicker from "expo-image-picker";
 import * as firebase from 'firebase';
+import moment from "moment"
 class Post extends Component {
   constructor(props) {
       super(props);
@@ -46,7 +47,7 @@ class Post extends Component {
     }
 
     addtoDatabase = () => {
-      firebase.firestore().collection("Posts").doc(this.state.text).set({Text: this.state.text, Author: firebase.auth().currentUser.email, time: new Date().getTime()})
+      firebase.firestore().collection("Posts").doc(this.state.text).set({Text: this.state.text, Author: firebase.auth().currentUser.email, time: moment(new Date().getTime()).toDate(), upvotes: 0})
     }
 
     pickImage = async() => {
