@@ -16,6 +16,7 @@ import Login from './screens/LoginScreen';
 import Register from './screens/RegisterScreen';
 import Feed from "./screens/FeedScreen.js";
 import 'firebase/firestore';
+import Post from "./screens/PostScreen.js"
 
 
 
@@ -79,6 +80,12 @@ function ProfileScreen() {
   )
 }
 
+function PostScreen() {
+  const navigation = useNavigation();
+  return(
+    <Post navigation={navigation}/>
+  )
+}
 const Tab = createMaterialBottomTabNavigator();
 function MainTabNavigator() {
   return (
@@ -90,6 +97,9 @@ function MainTabNavigator() {
       }}/>
       <Tab.Screen name='Feed' component={FeedScreen} options={{
         tabBarIcon: ({color}) => <Icon  name='inbox'  type='font-awesome'  color={color}  size='24'/>
+      }}/>
+      <Tab.Screen name='Post' component={PostScreen} options={{
+        tabBarIcon: ({color}) => <Icon  name='plus'  type='font-awesome'  color={color}  size='24'/>
       }}/>
 
     </Tab.Navigator>
