@@ -66,7 +66,7 @@ class Post extends Component {
             <ScrollView style={styles.container} keyboardDismissMode='on-drag'>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={this.addtoDatabase}>
-                        <Text style = {{fontWeight:"500"}}> Post </Text>
+                        <Text style = {{fontWeight:"500", marginTop:30}}> Post </Text>
                     </TouchableOpacity>
                 </View>
                 <View style = {styles.inputContainer}>
@@ -75,7 +75,7 @@ class Post extends Component {
                         autoFocus={true}
                         multiline={true}
                         numberOfLines={4}
-                        style={{flex: 1}}
+                        style={{flex: 1, backgroundColor:'#ebecf4'}}
                         placeholder="Share your thoughts..."
                         onChangeText={text => this.setState({text})}/>
 
@@ -98,6 +98,7 @@ class Post extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:'#EBECF4'
     },
     header: {
         flexDirection: "row",
@@ -105,9 +106,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 32,
         paddingVertical: 12,
         borderBottomWidth: 1,
-        borderBottomColor: "#D8D9DB"
+        borderBottomColor: '#d3d4db'
+
     },
     inputContainer: {
+        backgroundColor:'#d3d4db',
         margin: 32,
         flexDirection: "row"
     },
