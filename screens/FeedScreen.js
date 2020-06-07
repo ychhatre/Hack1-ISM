@@ -1,10 +1,16 @@
 import React from 'react';
-import {View, Text,StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text,StyleSheet, ActivityIndicator, FlatList, TouchableOpacity, ScrollView, RefreshControl} from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 import {Ionicons} from "@expo/vector-icons";
 import * as firebase from 'firebase';
 import moment from "moment"
+
+function wait(timeout) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
  class Feed extends React.Component {
    constructor(props) {
        super(props);
@@ -13,12 +19,15 @@ import moment from "moment"
        errorFieldColor:'',
        fontsLoaded: false,
         navigation:'',
-        list:[]
+        list:[],
+        refreshing: false,
 
 
 
        }
      }
+
+
 
 
 
@@ -50,6 +59,15 @@ import moment from "moment"
   handleUpvotes = () => {
 
   }
+
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.setState({list:[]})
+    this.handlePostGet()
+     wait(2000).then(() =>  this.setState({refreshing: false}));
+
+  }
+
 
 
 
@@ -111,7 +129,13 @@ import moment from "moment"
 
                   <Text style={{justifyContent:"center", alignItems:'center', fontFamily: "DMSans-Medium", fontSize:25}}> Feed </Text>
                 </View>
-                  <ScrollView>
+                  <ScrollView refreshControl={
+                    <RefreshControl
+              //refresh control used for the Pull to Refresh
+                    refreshing={this.state.refreshing}
+                    onRefresh={this._onRefresh}
+                    />
+                  }>
                   {
 
                           this.state.list.map((item, i) => (
