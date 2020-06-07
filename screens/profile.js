@@ -1,42 +1,54 @@
 import React from 'react';
-import TouchID from 'react-native-touch-id';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, Text, StyleSheet, Button, Image  } from 'react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
+import fire from '../Fire'
 
-class Profile extends React.Component {
-  state = { locked: true };
+export default class ProfileScreen extends React.Component{
+  state = {
+    user:{}
+  }
 
-  componentDidMount() {
-    LocalAuthentication.authenticateAsync().then(success =>
-      this.setState({ locked: false }),
+  unsubscribe = null
+
+  componentDidMount(){
+    const user = this.props.uid || Fire.shared.uid
+
+    this.unsubscribe = Fire.shared.firestore;
+      .collection("users")
+      .doc(user)
+      .onSnapshot(doc => {
+
+        this.setState({user: doc.data() });
+      });
+  }
+
+  componentWillUnmount(){
+    this.unsubscribe();
+  }
+
+  render(){
+    return (
+      <View style={styles.container}>
+        <View style {{marginTop: 64, alignItems: "center"}}
+          <View style {styles.avatarContainer}>
+            <Image style {styles.avatar} source={this.state.user.avatar ? {uri: this.state.user.avatar} : require('../asstes')}/>
+          </View>
+        </View>
+      </View>
     );
   }
 
-  render() {
-    if (this.state.locked) {
-      return(
-      <View>
-      </View>
-    )
-    }else{
-
-    return (
-      <View style={styles.container}>
-      <Text style={styles.center}> Sucess! Welcome fool!</Text>
-      </View>
-    )
-  }
-  }
 }
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EBECF4',
-
-  },
-  center:{
-    justifyContent:"center",
-    marginTop:40 
   }
-})
+});
+
+
+
 export default Profile
+
